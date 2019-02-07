@@ -23,6 +23,9 @@ app.use(cors());
 
 app.set('port', 8081);
 
+const mainRoutes = require('./routes/main');
+app.use('/api/main', mainRoutes);
+
 var server = http.createServer(app);
 
 app.listen(8081, (err) => {
