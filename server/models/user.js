@@ -4,10 +4,10 @@ const bcrypt = require('bcrypt-nodejs');
 const crypto = require('crypto');
 
 const userSchema = new Schema({
-    email: {type: String, unique: true, lowercase: true},
-    firstName: {type: String},
-    secondName: {type: String},
-    password: {type: String},
+    email: {type: String, unique: true, lowercase: true, required: true},
+    firstName: {type: String, required: true},
+    secondName: {type: String, required: true},
+    password: {type: String, required: true},
     profile_pic: {type: String},
     created: {type: Date, default: Date.now},
     bio: {type: String}
@@ -34,3 +34,5 @@ userSchema.methods.defaultProfilePic = function(size) {
     var md5 = crypto.createHash('md5').update(this.email).digest('hex');
     return 'https://gravatar.com/avatar/' + md5 + '?s' + size + '&d=retro';
 }
+
+module.exports = mongoose.model('User', userSchema);
