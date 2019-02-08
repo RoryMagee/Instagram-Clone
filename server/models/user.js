@@ -6,13 +6,17 @@ const Post = require('./post');
 
 const userSchema = new Schema({
     email: {type: String, unique: true, lowercase: true, required: true},
+    userName: {type: String, unique: true, required: true},
+    userNameLower: {type: String, unique: true},
     firstName: {type: String, required: true},
     secondName: {type: String, required: true},
     password: {type: String, required: true},
     profile_pic: {type: String},
     created: {type: Date, default: Date.now},
     bio: {type: String},
-    posts: [{type: Post, default: []}]
+    posts: [{type: mongoose.SchemaTypes.ObjectId, ref: 'Post', default: []}],
+    followers: [{type: mongoose.SchemaTypes.ObjectId, ref: 'Users', default: []}],
+    following: [{type: mongoose.SchemaTypes.ObjectId, ref: 'Users', default: []}]
 });
 
 userSchema.pre('save', function(next) {
@@ -24,6 +28,8 @@ userSchema.pre('save', function(next) {
         console.log("userpassword = " + hash);
         next();
     });
+    user.userNameLower = user.userName.toLowerCase();
+    console.log(user.userName.toLowerCase());
 });
 
 userSchema.methods.comparePassword = function(password) {

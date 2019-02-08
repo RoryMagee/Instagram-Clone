@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const Post = require('../models/post');
 const checkJWT = require('../middleware/check-jwt');
 
 
@@ -8,9 +9,11 @@ const checkJWT = require('../middleware/check-jwt');
 router.post('/signup', (req, res, next) => {
     let user = new User();
     user.email = req.body.email;
+    user.userName = req.body.username;
     user.firstName = req.body.firstName;
     user.secondName = req.body.secondName;
     user.password = req.body.password;
+    user.bio = req.body.bio;
     user.profile_pic = user.defaultProfilePic();
     
     User.findOne({email: user.email}, (err, existingUser) => {
@@ -25,7 +28,8 @@ router.post('/signup', (req, res, next) => {
             res.json({
                 success: true,
                 message: 'token issued',
-                token: token
+                token: token,
+                user: user
             });
         }
     });
@@ -87,7 +91,41 @@ router.get('/allusers', (req, res, next) => {
     });
 });
 
+router.get('/:username', (req, res, next) => {
+    User.findOne({userNameLower: req.params.username.toLowerCase()}, (err, user) => {
+        if(!user) {
+            res.json({
+                success: false,
+                message: 'No user with that username'
+            });
+        } else {
+            res.json({
+                success: true,
+                user: user
+            });
+        }
+    });
+});
 
+
+
+router.get('/post/:postId', (req, res, next) => {
+    Post.findOne({_id: req.params.postId})
+    .populate('User')
+    .exec((err, doc) => {
+        if (err) {
+            res.json({
+                success: false,
+                err: err
+            });
+        } else {
+            res.json({
+                success: true,
+                doc: doc
+            });
+        }
+    });
+});
 
 
 module.exports = router;
