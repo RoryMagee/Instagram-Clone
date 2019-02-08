@@ -18,7 +18,8 @@ mongoose.connect(config.database, (err) => {
 });
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(morgan('dev'));
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(cors());
 
 app.set('port', 8081);

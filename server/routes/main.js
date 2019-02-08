@@ -7,6 +7,7 @@ const dotenv = require('dotenv').config();
 const aws = require('aws-sdk');
 const multer = require('multer');
 const multerS3 = require('multer-s3');
+const s3 = new aws.S3({ accessKeyId: process.env.aws_access_id_key, secretAccessKey: process.env.aws_secret_access_key});
 
 const upload = multer({
     storage: multerS3({
@@ -21,7 +22,7 @@ const upload = multer({
         }
     })
 });
-
+ 
 
 //Router for user account creation
 router.post('/signup', (req, res, next) => {
@@ -125,12 +126,18 @@ router.get('/:username', (req, res, next) => {
     });
 });
 
-router.post('/post', (req, res, next) => {
-    let post = new Post();
-    post.image = req.body.image;
-    post.caption = req.body.caption;
-    
-})
+router.route('/post')
+    .post([checkJWT, upload.single('post_image')], (req, res, next) => {
+        let post = new Post();
+        post.postedBy = req.decoded.user._id;
+        post.image = req.file.location;
+        post.caption = req.body.caption;
+        post.save();
+        res.json({
+            success: true,
+            message: 'Post made successfully'
+        });
+    });
 
 router.get('/post/:postId', (req, res, next) => {
     Post.findOne({_id: req.params.postId})
@@ -149,6 +156,7 @@ router.get('/post/:postId', (req, res, next) => {
         }
     });
 });
+    
 
 
 module.exports = router;
