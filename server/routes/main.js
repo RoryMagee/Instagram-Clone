@@ -107,7 +107,12 @@ router.get('/:username', (req, res, next) => {
     });
 });
 
-
+router.post('/post', (req, res, next) => {
+    let post = new Post();
+    post.image = req.body.image;
+    post.caption = req.body.caption;
+    
+})
 
 router.get('/post/:postId', (req, res, next) => {
     Post.findOne({_id: req.params.postId})
