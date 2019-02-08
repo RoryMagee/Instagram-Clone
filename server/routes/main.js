@@ -3,6 +3,24 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const Post = require('../models/post');
 const checkJWT = require('../middleware/check-jwt');
+const dotenv = require('dotenv').config();
+const aws = require('aws-sdk');
+const multer = require('multer');
+const multerS3 = require('multer-s3');
+
+const upload = multer({
+    storage: multerS3({
+        s3: s3,
+        bucket: 'instagramstorage',
+        metadata: (req, file, cb) => {
+            cb(null, {fieldName: file.fieldname});
+        },
+        key: (req, file, cb) => {
+            console.log(file);
+            cb(null, Date.now().toString());
+        }
+    })
+});
 
 
 //Router for user account creation
