@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const bcrypt = require('bcrypt-nodejs');
 const crypto = require('crypto');
+const Post = require('./post');
 
 const userSchema = new Schema({
     email: {type: String, unique: true, lowercase: true, required: true},
@@ -10,7 +11,8 @@ const userSchema = new Schema({
     password: {type: String, required: true},
     profile_pic: {type: String},
     created: {type: Date, default: Date.now},
-    bio: {type: String}
+    bio: {type: String},
+    posts: [{type: Post, default: []}]
 });
 
 userSchema.pre('save', function(next) {
