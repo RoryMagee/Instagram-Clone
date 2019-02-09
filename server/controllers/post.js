@@ -77,8 +77,23 @@ exports.createPost = (req, res, next) => {
             res.json({
                 success: true,
                 message: 'Post made successfully',
-                post: post,
-                user: user
+                post: post
+            });
+        }
+    });
+}
+
+exports.deleteAllPosts = (req, res, next) => {
+    Post.remove({}, (err) => {
+        if (err) {
+            res.json({
+                success: false,
+                err: err
+            });
+        } else {
+            res.json({
+                success: true,
+                message: 'All posts successfully deleted'
             });
         }
     });
