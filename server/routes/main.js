@@ -55,6 +55,7 @@ router.post('/signup', (req, res, next) => {
 });
 
 router.post('/login', (req, res, next) => {
+    console.log(req.body);
     User.findOne({email: req.body.email}, (err, user) => {
         if (err) {
             res.json({
@@ -110,7 +111,7 @@ router.get('/allusers', (req, res, next) => {
     });
 });
 
-router.get('/:username', (req, res, next) => {
+router.get('/user/:username', (req, res, next) => {
     User.findOne({userNameLower: req.params.username.toLowerCase()}, (err, user) => {
         if(!user) {
             res.json({
@@ -128,6 +129,7 @@ router.get('/:username', (req, res, next) => {
 
 router.route('/post')
     .post([checkJWT, upload.single('post_image')], (req, res, next) => {
+        console.log(req.body);
         let post = new Post();
         post.postedBy = req.decoded.user._id;
         post.image = req.file.location;
@@ -136,6 +138,21 @@ router.route('/post')
         res.json({
             success: true,
             message: 'Post made successfully'
+        });
+    })
+    .get((req, res, next) => {
+        Post.find({}, (err, posts) => {
+            if (err) {
+                res.json({
+                    success: false,
+                    err: err
+                });
+            } else {
+                res.json({
+                    success: true,
+                    posts: posts
+                });
+            }
         });
     });
 
