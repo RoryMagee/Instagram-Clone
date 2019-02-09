@@ -3,24 +3,7 @@ const User = require('../models/user');
 const Post = require('../models/post');
 const checkJWT = require('../middleware/check-jwt');
 const dotenv = require('dotenv').config();
-const aws = require('aws-sdk');
-const multer = require('multer');
-const multerS3 = require('multer-s3');
-const s3 = new aws.S3({ accessKeyId: process.env.aws_access_id_key, secretAccessKey: process.env.aws_secret_access_key });
-
-const upload = multer({
-    storage: multerS3({
-        s3: s3,
-        bucket: 'instagramstorage',
-        metadata: (req, file, cb) => {
-            cb(null, { fieldName: file.fieldname });
-        },
-        key: (req, file, cb) => {
-            console.log(file);
-            cb(null, Date.now().toString());
-        }
-    })
-});
+const async = require('async');
 
 exports.getAllPosts = (req, res, next) => {
     Post.find({})
@@ -96,5 +79,54 @@ exports.deleteAllPosts = (req, res, next) => {
                 message: 'All posts successfully deleted'
             });
         }
+    });
+}
+
+exports.likePost = (req, res, next) => {
+    async.parallel([
+        (callback) => {
+            User.findOne({ _id: req.decoded.user._id }, (err, user) => {
+                callback(err, user);
+            });
+        },
+        (callback) => {
+            Post.findOne({ _id: req.body.postId }, (err, post) => {
+                if (err) {
+                    return next(err);
+                } else {
+                    callback(err, post);
+                }
+            });
+        }
+    ], (err, results) => {
+        let user = results[0];
+        let post = results[1];
+        Post.countDocuments({ likedBy: user }, (err, count) => {
+            console.log(count);
+            if (err) {
+                res.json({
+                    success: false,
+                    err: err
+                });
+            } else if (count > 0) {
+                post.likedBy.remove(user);
+                post.likes--;
+                post.save();
+                res.json({
+                    success: true,
+                    message: 'Like removed',
+                    post: post
+                });
+            } else if (count == 0) {
+                post.likedBy.push(user);
+                post.likes++;
+                post.save();
+                res.json({
+                    success: true,
+                    message: 'Like added',
+                    post: post
+                });
+            }
+        });
     });
 }

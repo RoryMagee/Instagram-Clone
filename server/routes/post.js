@@ -27,6 +27,7 @@ router.get('/', postController.getAllPosts);
 router.get('/:postId', postController.getPost);
 router.post('/', [checkJWT, upload.single('post_image')], postController.createPost);
 router.delete('/', postController.deleteAllPosts);
+router.post('/likePost', checkJWT, postController.likePost);
 
 
 module.exports = router;

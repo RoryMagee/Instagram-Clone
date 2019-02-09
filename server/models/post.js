@@ -7,6 +7,7 @@ const postSchema = new Schema({
     caption: {type: String, required: true},
     created: {type: Date, default: Date.now},
     likes: {type: Number, default: 0},
+    likedBy: [{type: mongoose.SchemaTypes.ObjectId, ref: 'User', default: []}],
     postedBy: {type: mongoose.SchemaTypes.ObjectId, ref: 'User', required: true},
     comments: [{
         comment: {type: String, required: true},
