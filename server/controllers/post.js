@@ -23,25 +23,27 @@ const upload = multer({
 });
 
 exports.getAllPosts = (req, res, next) => {
-    Post.find({}, (err, posts) => {
-        if (err) {
-            res.json({
-                success: false,
-                err: err
-            });
-        } else {
-            res.json({
-                success: true,
-                posts: posts
-            });
-        }
-    });
+    Post.find({})
+        .populate('postedBy')
+        .exec((err, posts) => {
+            if (err) {
+                res.json({
+                    success: false,
+                    err: err
+                });
+            } else {
+                res.json({
+                    success: true,
+                    posts: posts
+                });
+            }
+        });
 }
 
 
 exports.getPost = (req, res, next) => {
     Post.findOne({ _id: req.params.postId })
-        .populate('User')
+        .populate('postedBy')
         .exec((err, doc) => {
             if (err) {
                 res.json({
@@ -58,14 +60,26 @@ exports.getPost = (req, res, next) => {
 }
 
 exports.createPost = (req, res, next) => {
-    console.log(req.body);
-    let post = new Post();
-    post.postedBy = req.decoded.user._id;
-    post.image = req.file.location;
-    post.caption = req.body.caption;
-    post.save();
-    res.json({
-        success: true,
-        message: 'Post made successfully'
+    User.findOne({ _id: req.decoded.user._id }, (err, user) => {
+        if (err) {
+            res.json({
+                success: false,
+                err: err
+            });
+        } else {
+            let post = new Post();
+            post.postedBy = req.decoded.user._id;
+            post.image = req.file.location;
+            post.caption = req.body.caption;
+            post.save();
+            user.posts.push(post);
+            user.save();
+            res.json({
+                success: true,
+                message: 'Post made successfully',
+                post: post,
+                user: user
+            });
+        }
     });
 }

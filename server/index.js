@@ -27,7 +27,7 @@ app.set('port', 8081);
 const postRoutes = require('./routes/post');
 const userRoutes = require('./routes/user');
 app.use('/api/posts', postRoutes);
-app.use('/api/user', userRoutes);
+app.use('/api/users', userRoutes);
 
 var server = http.createServer(app);
 

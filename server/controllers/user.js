@@ -4,7 +4,9 @@ const Post = require('../models/post');
 const checkJWT = require('../middleware/check-jwt');
 
 exports.getAllUsers = (req, res, next) => {
-    User.find({}, (err, doc) => {
+    User.find({})
+    .populate('posts')
+    .exec((err, doc) => {
         if(err) {
             res.json({
                 err: err

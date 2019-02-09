@@ -1,9 +1,3 @@
-const express = require('express');
-const router = express.Router();
-const checkJWT = require('../middleware/check-jwt');
-const postUpload = require('../middleware/post-upload');
-const postController = require('../controllers/post');
-
 const aws = require('aws-sdk');
 const multer = require('multer');
 const multerS3 = require('multer-s3');
@@ -22,10 +16,3 @@ const upload = multer({
         }
     })
 });
-
-router.get('/', postController.getAllPosts);
-router.get('/:postId', postController.getPost);
-router.post('/', [checkJWT, upload.single('post_image')], postController.createPost);
-
-
-module.exports = router;
