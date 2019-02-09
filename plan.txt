@@ -9,15 +9,3 @@ Main
 /search:search_term
 /post
 
-
-
-Models
-
-User
-email
-firstName
-secondName
-password
-profile_pic
-created
-bio
