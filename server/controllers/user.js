@@ -128,3 +128,33 @@ exports.followUser = (req, res, next) => {
         }
     });
 }
+
+exports.unfollowUser = (req, res, next) => {
+    User.findOne({_id: req.decoded.user._id}, (err, follower) => {
+        if(err) {
+            res.json({
+                success: false,
+                err: err
+            });
+        } else {
+            User.findOne({_id: req.body.userId}, (err, following) => {
+                if(err) {
+                    res.json({
+                        success: false,
+                        err: err
+                    });
+                } else {
+                    follower.following.remove(following);
+                    following.followers.remove(follower);
+                    follower.save();
+                    following.save();
+                    res.json({
+                        success: true,
+                        message: 'Successful unfollow',
+                        user: follower
+                    });
+                }
+            });
+        }
+    });
+}
