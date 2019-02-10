@@ -95,13 +95,13 @@ exports.likePost = (req, res, next) => {
                     return next(err);
                 } else {
                     callback(err, post);
+                    console.log(post);
                 }
             });
         }
     ], (err, results) => {
         let user = results[0];
         let post = results[1];
-        //TODO - likedBy: user AND _id: post
         Post.countDocuments({ $and: [{likedBy: user}, {_id: post}]}, (err, count) => {
             console.log(count);
             if (err) {
