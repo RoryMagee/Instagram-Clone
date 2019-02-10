@@ -111,7 +111,9 @@ exports.likePost = (req, res, next) => {
             } else if (count > 0) {
                 post.likedBy.remove(user);
                 post.likes--;
+                user.likedPosts.remove(post);
                 post.save();
+                user.save();
                 res.json({
                     success: true,
                     message: 'Like removed',
@@ -120,7 +122,9 @@ exports.likePost = (req, res, next) => {
             } else if (count == 0) {
                 post.likedBy.push(user);
                 post.likes++;
+                user.likedPosts.push(post);
                 post.save();
+                user.save();
                 res.json({
                     success: true,
                     message: 'Like added',

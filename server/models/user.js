@@ -16,7 +16,8 @@ const userSchema = new Schema({
     bio: {type: String},
     posts: [{type: mongoose.SchemaTypes.ObjectId, ref: 'Post', default: []}],
     followers: [{type: mongoose.SchemaTypes.ObjectId, ref: 'Users', default: []}],
-    following: [{type: mongoose.SchemaTypes.ObjectId, ref: 'Users', default: []}]
+    following: [{type: mongoose.SchemaTypes.ObjectId, ref: 'Users', default: []}],
+    likedPosts: [{type: mongoose.SchemaTypes.ObjectId, ref: 'Post', default: []}]
 });
 
 userSchema.pre('save', function(next) {

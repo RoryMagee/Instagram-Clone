@@ -36,7 +36,9 @@ exports.deleteAllUsers = (req, res, next) => {
 }
 
 exports.getUser = (req, res, next) => {
-    User.findOne({ userNameLower: req.params.username.toLowerCase() }, (err, user) => {
+    User.find({ _id: req.params.identifier })
+        .populate('posts')
+        .exec((err, user) => {
         if (!user) {
             res.json({
                 success: false,
@@ -49,6 +51,7 @@ exports.getUser = (req, res, next) => {
             });
         }
     });
+
 }
 
 exports.userSignup = (req, res, next) => {
@@ -130,15 +133,15 @@ exports.followUser = (req, res, next) => {
 }
 
 exports.unfollowUser = (req, res, next) => {
-    User.findOne({_id: req.decoded.user._id}, (err, follower) => {
-        if(err) {
+    User.findOne({ _id: req.decoded.user._id }, (err, follower) => {
+        if (err) {
             res.json({
                 success: false,
                 err: err
             });
         } else {
-            User.findOne({_id: req.body.userId}, (err, following) => {
-                if(err) {
+            User.findOne({ _id: req.body.userId }, (err, following) => {
+                if (err) {
                     res.json({
                         success: false,
                         err: err
