@@ -101,7 +101,8 @@ exports.likePost = (req, res, next) => {
     ], (err, results) => {
         let user = results[0];
         let post = results[1];
-        Post.countDocuments({ likedBy: user }, (err, count) => {
+        //TODO - likedBy: user AND _id: post
+        Post.countDocuments({ $and: [{likedBy: user}, {_id: post}]}, (err, count) => {
             console.log(count);
             if (err) {
                 res.json({

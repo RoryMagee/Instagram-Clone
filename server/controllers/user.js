@@ -3,6 +3,7 @@ const User = require('../models/user');
 const Post = require('../models/post');
 const checkJWT = require('../middleware/check-jwt');
 const jwt = require('jsonwebtoken');
+const async = require('async');
 
 exports.getAllUsers = (req, res, next) => {
     User.find({})
@@ -103,60 +104,57 @@ exports.userLogin = (req, res, next) => {
 }
 
 exports.followUser = (req, res, next) => {
-    User.findOne({ _id: req.decoded.user._id }, (err, follower) => {
-        if (err) {
-            res.json({
-                success: false,
-                err: err
+    async.parallel([
+        (callback) => {
+            User.findOne({_id: req.decoded.user._id}, (err, follower) => {
+                callback(err, follower);
             });
-        } else {
-            User.findOne({ _id: req.body.userId }, (err, following) => {
-                if (err) {
-                    res.json({
-                        success: false,
-                        err: err
-                    });
+        },
+        (callback) => {
+            User.findOne({_id: req.body.userId}, (err, following) => {
+                if(err) {
+                    return next(err);
                 } else {
-                    follower.following.push(following);
-                    following.followers.push(follower);
-                    follower.save();
-                    following.save();
-                    res.json({
-                        success: true,
-                        message: "Successful follow",
-                        user: follower
-                    });
+                    callback(err, following);
+                }
+            });
+        },
+        (callback) => {
+            //Count = number of users in following array that match selected user
+            User.countDocuments({$and: [{_id: req.decoded.user._id}, {following: req.body.userId}]}, (err, count) => {
+                if(err) {
+                    return next(err);
+                } else {
+                    callback(err, count);
                 }
             });
         }
-    });
-}
-
-exports.unfollowUser = (req, res, next) => {
-    User.findOne({ _id: req.decoded.user._id }, (err, follower) => {
-        if (err) {
+    ], (err, results) => {
+        let follower = results[0];
+        let following = results[1];
+        let count = results[2];
+        if(err) {
             res.json({
                 success: false,
                 err: err
             });
-        } else {
-            User.findOne({ _id: req.body.userId }, (err, following) => {
-                if (err) {
-                    res.json({
-                        success: false,
-                        err: err
-                    });
-                } else {
-                    follower.following.remove(following);
-                    following.followers.remove(follower);
-                    follower.save();
-                    following.save();
-                    res.json({
-                        success: true,
-                        message: 'Successful unfollow',
-                        user: follower
-                    });
-                }
+        } else if (count > 0) {
+            following.followers.remove(follower);
+            follower.following.remove(following);
+            follower.save();
+            following.save();
+            res.json({
+                success: true,
+                message: 'User successfully unfollowed'
+            });
+        } else if (count == 0) {
+            following.followers.push(follower);
+            follower.following.push(following);
+            follower.save();
+            following.save();
+            res.json({
+                success: true,
+                message: 'User successfully followed'
             });
         }
     });

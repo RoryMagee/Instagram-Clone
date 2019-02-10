@@ -9,6 +9,5 @@ router.get('/:identifier', userController.getUser);
 router.post('/signup', userController.userSignup);
 router.post('/login', userController.userLogin);
 router.post('/follow', checkJWT, userController.followUser);
-router.post('/unfollow', checkJWT, userController.unfollowUser);
 
 module.exports = router;
