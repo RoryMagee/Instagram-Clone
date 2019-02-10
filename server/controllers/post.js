@@ -95,7 +95,6 @@ exports.likePost = (req, res, next) => {
                     return next(err);
                 } else {
                     callback(err, post);
-                    console.log(post);
                 }
             });
         }
@@ -134,4 +133,10 @@ exports.likePost = (req, res, next) => {
             }
         });
     });
+}
+
+exports.postComment = (req, res, next) => {
+    Post.findOne({_id: req.body.postId}, (err, post) => {
+        
+    })
 }
