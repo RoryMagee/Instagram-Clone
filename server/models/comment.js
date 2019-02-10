@@ -12,4 +12,8 @@ const commentSchema = new Schema({
     post: {type: mongoose.SchemaTypes.ObjectId, ref: 'Post', required: true}
 });
 
+commentSchema.pre('remove', (next) => {
+    console.log("sdfgkljhdfgkljh");
+});
+
 module.exports = mongoose.model('Comment', commentSchema);

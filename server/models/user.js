@@ -33,6 +33,10 @@ userSchema.pre('save', function(next) {
     console.log(user.userName.toLowerCase());
 });
 
+userSchema.pre('remove', (next) => {
+    Post.remove({postedBy: this._id}).exec();
+});
+
 userSchema.methods.comparePassword = function(password) {
     return bcrypt.compareSync(password, this.password);
 };
