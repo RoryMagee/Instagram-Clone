@@ -13,7 +13,10 @@ const commentSchema = new Schema({
 });
 
 commentSchema.pre('remove', (next) => {
-    console.log("sdfgkljhdfgkljh");
+    // Post.find({_id: this.post}, (err, post) {
+
+    // });
+    console.log("remove hook working");
 });
 
 module.exports = mongoose.model('Comment', commentSchema);

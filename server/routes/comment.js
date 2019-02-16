@@ -5,5 +5,7 @@ const commentController = require('../controllers/comment');
 
 router.post('/:postId', checkJWT, commentController.postComment);
 router.delete('/:commentId', checkJWT, commentController.deleteComment);
+router.delete('/', commentController.deleteAllComments);
 router.get('/:commentId', commentController.getComment);
+router.get('/', commentController.getAllComments);
 module.exports = router;

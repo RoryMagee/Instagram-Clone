@@ -30,16 +30,31 @@ exports.postComment = (req, res, next) => {
 }
 
 exports.deleteComment = (req, res, next) => {
-    Comment.findOneAndDelete({_id: req.params.commentId}, (err, comment) => {
-        if (err) {
+    Comment.remove({_id: req.params.commentId}, (err, comment) => {
+        if(err) {
             res.json({
                 success: false,
                 err: err
             });
         } else {
             res.json({
-                success: true, 
-                message: 'Comment successfully deleted',
+                success: true,
+                comment: comment
+            });
+        }
+    });
+}
+
+exports.deleteAllComments = (req, res, next) => {
+    Comment.remove({}, (err, comment) => {
+        if(err) {
+            res.json({
+                success: false,
+                err: err
+            });
+        } else {
+            res.json({
+                success: true,
                 comment: comment
             });
         }
@@ -57,6 +72,22 @@ exports.getComment = (req, res, next) => {
             res.json({
                 success: true,
                 comment: comment
+            });
+        }
+    });
+}
+
+exports.getAllComments = (req, res, next) => {
+    Comment.find({}, (err, comments) => {
+        if(err) {
+            res.json({
+                success: false,
+                err: err
+            });
+        } else {
+            res.json({
+                success: true,
+                comments: comments
             });
         }
     });
