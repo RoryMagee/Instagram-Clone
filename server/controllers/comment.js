@@ -29,21 +29,30 @@ exports.postComment = (req, res, next) => {
     });
 }
 
-// exports.postReply = (req, res, next) => {
-//     Comment.findOne({_id: req.params.commentId}, (err, comment) => {
-//         if(err) {
-//             res.json({
-//                 success: false,
-//                 err: err
-//             });
-//         } else {
-//             let reply = new Comment();
-//             reply.commentText = req.body.reply;
-//             reply.postedBy = req.decoded.user._id;
-//             reply.post
-//         }
-//     })
-// }
+exports.postReply = (req, res, next) => {
+    Comment.findOne({_id: req.params.commentId}, (err, comment) => {
+        if(err) {
+            res.json({
+                success: false,
+                err: err
+            });
+        } else {
+            let reply = new Comment();
+            reply.commentText = req.body.reply;
+            reply.postedBy = req.decoded.user._id;
+            comment.replies.push(reply);
+            reply.save();
+            console.log(reply);
+            comment.save();
+            res.json({
+                success: true,
+                message: 'Reply successfully added',
+                comment: comment,
+                reply: reply
+            });
+        }
+    });
+}
 
 exports.deleteComment = (req, res, next) => {
     Comment.remove({_id: req.params.commentId}, (err, comment) => {
@@ -78,7 +87,9 @@ exports.deleteAllComments = (req, res, next) => {
 }
 
 exports.getComment = (req, res, next) => {
-    Comment.findOne({_id: req.params.commentId}, (err,comment) => {
+    Comment.findOne({_id: req.params.commentId})
+    //.populate('replies')
+    .exec((err, comment) => {
         if(err) {
             res.json({
                 sucess: false,

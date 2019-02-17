@@ -8,8 +8,8 @@ const commentSchema = new Schema({
     commentText: {type: String, required: true},
     likes: {type: Number, default: 0},
     replies: [{type: mongoose.SchemaTypes.ObjectId, ref: 'Comment', default: []}],
-    postedBy: {type: mongoose.SchemaTypes.ObjectId, ref: 'User', required: true},
-    post: {type: mongoose.SchemaTypes.ObjectId, ref: 'Post', required: true}
+    postedBy: {type: mongoose.SchemaTypes.ObjectId, ref: 'User', required: true}
+    //post: {type: mongoose.SchemaTypes.ObjectId, ref: 'Post', required: true}
 });
 
 commentSchema.pre('remove', (next) => {

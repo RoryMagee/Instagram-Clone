@@ -9,6 +9,7 @@ exports.getAllPosts = (req, res, next) => {
     Post.find({})
         .populate('postedBy')
         .populate('comments')
+        .populate('replies')
         .exec((err, posts) => {
             if (err) {
                 res.json({
@@ -29,6 +30,10 @@ exports.getPost = (req, res, next) => {
     Post.findOne({ _id: req.params.postId })
         .populate('postedBy')
         .populate('comments')
+        .populate({
+            path: 'comments',
+            populate: {path: 'replies'}
+        })
         .exec((err, doc) => {
             if (err) {
                 res.json({
