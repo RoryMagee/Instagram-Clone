@@ -29,6 +29,22 @@ exports.postComment = (req, res, next) => {
     });
 }
 
+// exports.postReply = (req, res, next) => {
+//     Comment.findOne({_id: req.params.commentId}, (err, comment) => {
+//         if(err) {
+//             res.json({
+//                 success: false,
+//                 err: err
+//             });
+//         } else {
+//             let reply = new Comment();
+//             reply.commentText = req.body.reply;
+//             reply.postedBy = req.decoded.user._id;
+//             reply.post
+//         }
+//     })
+// }
+
 exports.deleteComment = (req, res, next) => {
     Comment.remove({_id: req.params.commentId}, (err, comment) => {
         if(err) {
