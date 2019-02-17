@@ -12,11 +12,13 @@ const commentSchema = new Schema({
     //post: {type: mongoose.SchemaTypes.ObjectId, ref: 'Post', required: true}
 });
 
-commentSchema.pre('remove', (next) => {
-    // Post.find({_id: this.post}, (err, post) {
+function autoPopulateSubs(next) {
+    this.populate('replies');
+    next();
+  }
 
-    // });
-    console.log("remove hook working");
-});
+commentSchema
+  .pre('findOne', autoPopulateSubs)
+  .pre('find', autoPopulateSubs);
 
 module.exports = mongoose.model('Comment', commentSchema);

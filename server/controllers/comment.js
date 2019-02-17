@@ -88,7 +88,7 @@ exports.deleteAllComments = (req, res, next) => {
 
 exports.getComment = (req, res, next) => {
     Comment.findOne({_id: req.params.commentId})
-    //.populate('replies')
+    .populate('replies')
     .exec((err, comment) => {
         if(err) {
             res.json({

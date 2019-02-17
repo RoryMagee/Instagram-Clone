@@ -8,8 +8,11 @@ const async = require('async');
 exports.getAllPosts = (req, res, next) => {
     Post.find({})
         .populate('postedBy')
-        .populate('comments')
-        .populate('replies')
+        //.populate('comments')
+        // .populate({
+        //     path: 'comments',
+        //     populate: [{path: 'replies'}]
+        // })
         .exec((err, posts) => {
             if (err) {
                 res.json({
@@ -32,7 +35,7 @@ exports.getPost = (req, res, next) => {
         .populate('comments')
         .populate({
             path: 'comments',
-            populate: {path: 'replies'}
+            populate: [{path: 'replies'}]
         })
         .exec((err, doc) => {
             if (err) {
