@@ -14,7 +14,9 @@ const postSchema = new Schema({
 });
 
 postSchema.pre('remove', (next) => {
-    Comment.remove({post: this._id}).exec();
+    console.log("Removing comments");
+    Comment.remove({id: {$in: [this.comments]}}).exec();
+    next();
 });
 
 module.exports = mongoose.model('Post', postSchema);

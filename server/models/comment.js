@@ -19,6 +19,11 @@ function autoPopulateSubs(next) {
 
 commentSchema
   .pre('findOne', autoPopulateSubs)
-  .pre('find', autoPopulateSubs);
+  .pre('find', autoPopulateSubs)
+  .pre('remove', (next) => {
+      console.log("Removing replies");
+      Comment.remove({_id: {$in: [this.replies]}}).exec();
+      next();
+  });
 
 module.exports = mongoose.model('Comment', commentSchema);

@@ -5,9 +5,12 @@ const checkJWT = require('../middleware/check-jwt');
 
 router.get('/', userController.getAllUsers);
 router.delete('/', userController.deleteAllUsers);
-router.get('/:identifier', userController.getUser);
+router.get('/user/:identifier', userController.getUser);
 router.post('/signup', userController.userSignup);
 router.post('/login', userController.userLogin);
 router.post('/follow', checkJWT, userController.followUser);
+//TODO
+router.get('/followers', checkJWT, userController.getFollowers);
+router.get('/following', checkJWT, userController.getFollowing);
 
 module.exports = router;

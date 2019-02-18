@@ -8,11 +8,11 @@ const async = require('async');
 exports.getAllPosts = (req, res, next) => {
     Post.find({})
         .populate('postedBy')
-        //.populate('comments')
-        // .populate({
-        //     path: 'comments',
-        //     populate: [{path: 'replies'}]
-        // })
+        .populate('comments')
+        .populate({
+            path: 'comments',
+            populate: [{path: 'replies'}]
+        })
         .exec((err, posts) => {
             if (err) {
                 res.json({
@@ -145,8 +145,18 @@ exports.likePost = (req, res, next) => {
     });
 }
 
-exports.postComment = (req, res, next) => {
-    Post.findOne({_id: req.body.postId}, (err, post) => {
-        
-    })
+exports.getFollowingPosts = (req, res, next) => {
+    Post.find({_id: {$in: [req.decoded.user.following]}}, (err, posts) => {
+        if (err) {
+            res.json({
+                success: false,
+                err: err
+            });
+        } else {
+            res.json({
+                sucess: true,
+                posts: posts
+            });
+        }
+    });
 }

@@ -159,3 +159,37 @@ exports.followUser = (req, res, next) => {
         }
     });
 }
+
+exports.getFollowers = (req, res, next) => {
+    User.find({_id: {$in: [req.decoded.user.followers]}}, (err, followers) => {
+        console.log("sdkfjghsdfklgjhsd");
+        if (err) {
+            res.json({
+                success: false,
+                err: err
+            });
+        } else {
+            res.json({
+                success: false,
+                followers: followers
+            });
+        } 
+    });
+}
+
+exports.getFollowing = (req, res, next) => {
+    User.find({_id: {$in: [req.decoded.user.following]}}, (err, following) => {
+        console.log("sdkfjghsdfklgjhsd");
+        if (err) {
+            res.json({
+                success: false,
+                err: err
+            });
+        } else {
+            res.json({
+                success: false,
+                following: following
+            });
+        } 
+    });
+}

@@ -35,6 +35,7 @@ userSchema.pre('save', function(next) {
 
 userSchema.pre('remove', (next) => {
     Post.remove({postedBy: this._id}).exec();
+    Comment.remove({postedBy: this._id}).exec();
 });
 
 userSchema.methods.comparePassword = function(password) {
