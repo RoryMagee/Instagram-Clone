@@ -73,6 +73,10 @@ exports.userSignup = (req, res, next) => {
             });
         } else {
             user.save();
+            res.json({
+                success: true,
+                message: 'Account successfully created'
+            });
         }
     });
 }

@@ -146,50 +146,31 @@ exports.likePost = (req, res, next) => {
 }
 
 exports.getFollowingPosts = (req, res, next) => {
-    // Post.find({_id: {$in: [req.decoded.user.following.posts]}}, (err, posts) => {
-    //     if (err) {
-    //         res.json({
-    //             success: false,
-    //             err: err
-    //         });
-    //     } else {
-    //         res.json({
-    //             sucess: true,
-    //             posts: posts
-    //         });
-    //     }
-    // });
-    // async.parallel([
-    //     (callback) => {
-    //         User.find({_id: {$in: [req.decoded.user.following]}}, (err, following) => {
-    //             callback(err, following);
-    //         })
-    //     },
-    //     (callback) => {
-    //         Post.find({postedBy: })
-    //     }
-    // ])
-    User.find({_id: {$in: [req.decoded.user.following]}}, (err, following) => {
-        if(err) {
-            res.json({
-                success: false,
-                err: err
-            });
-        } else {
-            //if error try Post.find({postedBy: following._id}, (err, posts))
-            Post.find({postedBy: {$in: [following._id]}}, (err, posts) => {
-                if (err) {
-                    res.json({
-                        success: false,
-                        err: err
+    User.find({followers: {$in: [req.decoded.user._id]}})
+        .select('_id')
+        .exec((err, following) => {
+            if(err) {
+                res.json({
+                    success: false,
+                    err: err
+                });
+            } else {
+                Post.find({postedBy: {$in: [following[0]]}})
+                    .populate('postedBy')
+                    .sort({created: 'desc'})
+                    .exec((err, posts) => {
+                        if (err) {
+                            res.json({
+                                success: false,
+                                err: err
+                            });
+                        } else {
+                            res.json({
+                                success: true,
+                                posts: posts
+                            });
+                        }
                     });
-                } else {
-                    res.json({
-                        success: true,
-                        posts: posts
-                    });
-                }
-            });
-        }
-    });
+            }
+        });
 }

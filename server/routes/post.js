@@ -29,7 +29,7 @@ router.post('/', [checkJWT, upload.single('post_image')], postController.createP
 router.delete('/', postController.deleteAllPosts);
 router.post('/likePost', checkJWT, postController.likePost);
 //TODO
-router.get('/following', postController.getFollowingPosts);
+router.get('/following', checkJWT, postController.getFollowingPosts);
 //router.get('/ownPosts', postController.getOwnPosts);
 
 module.exports = router;
