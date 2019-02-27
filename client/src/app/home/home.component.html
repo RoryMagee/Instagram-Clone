@@ -5,8 +5,19 @@
       <div class="col-md-4">
         <p>image goes here</p>
       </div>
-      <div class="col-md-4">
-        <div class="card">test</div>
+      <div class="col-md-4" align="center">
+        <img class="w-75" src="../../assets/login_logo.png" alt="">
+        <h5 class="pt-3">Sign up to see photos and videos from your friend</h5>
+        <hr>
+        <form class="px-4">
+          <div class="form-group">
+              <input class="w-100 form-control" placeholder="Email Address" name="email" [(ngModel)]="email">
+              <input class="w-100 form-control mt-2" placeholder="Firstname" name="email" [(ngModel)]="firstName">
+              <input class="w-100 form-control mt-2" placeholder="Surname" name="email" [(ngModel)]="secondName">
+              <input class="w-100 form-control mt-2" placeholder="Username" name="email" [(ngModel)]="username">
+              <input class="w-100 form-control mt-2" type="password" placeholder="Password" name="email" [(ngModel)]="password">
+          </div>
+        </form>
       </div>
       <div class="col-md-2"></div>
     </div>
