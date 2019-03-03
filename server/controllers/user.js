@@ -55,6 +55,23 @@ exports.getUser = (req, res, next) => {
 
 }
 
+exports.getProfile = (req, res, next) => {
+    User.find({_id: req.decoded.user._id}, (err, user) => {
+        if (err) {
+            res.json({
+                success: false,
+                err: err,
+                message: 'user not found'
+            });
+        } else {
+            res.json({
+                success: true,
+                user: user
+            });
+        }
+    });
+}
+
 exports.userSignup = (req, res, next) => {
     let user = new User();
     user.email = req.body.email;
@@ -73,9 +90,11 @@ exports.userSignup = (req, res, next) => {
             });
         } else {
             user.save();
+            let token = jwt.sign({ user: user }, process.env.secret, { expiresIn: '7d'});
             res.json({
                 success: true,
-                message: 'Account successfully created'
+                message: 'Account successfully created',
+                token: token
             });
         }
     });

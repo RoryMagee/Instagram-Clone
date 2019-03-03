@@ -139,7 +139,7 @@ exports.likePost = (req, res, next) => {
                     success: true,
                     message: 'Like added',
                     post: post
-                });
+                });vv
             }
         });
     });

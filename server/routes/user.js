@@ -5,6 +5,7 @@ const checkJWT = require('../middleware/check-jwt');
 
 router.get('/', userController.getAllUsers);
 router.delete('/', userController.deleteAllUsers);
+router.get('/user', checkJWT, userController.getProfile);
 router.get('/user/:identifier', userController.getUser);
 router.post('/signup', userController.userSignup);
 router.post('/login', userController.userLogin);
